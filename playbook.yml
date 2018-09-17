@@ -1,0 +1,8 @@
+﻿---
+- hosts: all
+  roles:
+    - { role: common, tags: common }
+    - { role: python, tags: python }
+    - { role: docker, tags: docker }
+    - { role: certbot, tags: certbot }
+    - { role: haproxy, tags: haproxy }

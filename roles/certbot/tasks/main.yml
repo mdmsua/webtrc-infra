@@ -1,0 +1,21 @@
+﻿---
+  - name: add repository
+    apt_repository:
+      repo: ppa:certbot/certbot
+
+  - name: install package
+    apt:
+      name: certbot
+      state: latest
+      update_cache: true
+
+  - name: check if zipkin certificate exists
+    stat: path=/etc/letsencrypt/live/zipkin.mdmsua.com/fullchain.pem
+    register: zipkin
+
+  - name: obtain zipkin certificate
+    shell: "certbot certonly --standalone -d zipkin.mdmsua.com --email mdmsua@icloud.com --non-interactive --agree-tos"
+    when: zipkin.stat.exists == False
+ 
+  - name: create zipkin ssl certificate
+    shell: "cat /etc/letsencrypt/live/zipkin.mdmsua.com/fullchain.pem /etc/letsencrypt/live/zipkin.mdmsua.com/privkey.pem > /etc/letsencrypt/live/zipkin.mdmsua.com/ssl.pem"

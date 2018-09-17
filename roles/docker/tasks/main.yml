@@ -1,0 +1,27 @@
+﻿---
+  - name: remove old versions
+    apt:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - docker
+      - docker-engine
+      - docker.io
+    
+  - name: add apt key
+    apt_key:
+      id: 0EBFCD88
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+  
+  - name: add apt repository
+    apt_repository:
+      repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+
+  - name: install apt package
+    apt:
+      name: docker-ce
+      state: latest
+      update_cache: true
+
+

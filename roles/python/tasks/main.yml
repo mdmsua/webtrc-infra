@@ -1,0 +1,10 @@
+﻿---
+  - name: install python-pip
+    apt:
+      name: python-pip
+      state: latest
+
+  - name: install docker pip
+    pip:
+      name: docker
+      state: latest

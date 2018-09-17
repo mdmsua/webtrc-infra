@@ -1,0 +1,10 @@
+﻿---
+  - name: install packages
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update_cache: true
+    with_items:
+      - software-properties-common
+      - apt-transport-https
+      - ca-certificates

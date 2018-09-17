@@ -1,0 +1,10 @@
+﻿---
+  - name: run container
+    docker_container:
+      name: zipkin
+      image: openzipkin/zipkin
+      state: started
+      detach: yes
+      restart_policy: unless-stopped
+      ports:
+        - 9411:9411
