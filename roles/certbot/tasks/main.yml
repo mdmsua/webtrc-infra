@@ -9,6 +9,11 @@
       state: latest
       update_cache: true
 
+  - name: stop haproxy
+    service:
+      name: haproxy
+      state: stopped
+
   - name: check if zipkin certificate exists
     stat: path=/etc/letsencrypt/live/zipkin.mdmsua.com/fullchain.pem
     register: zipkin
@@ -19,3 +24,19 @@
  
   - name: create zipkin ssl certificate
     shell: "cat /etc/letsencrypt/live/zipkin.mdmsua.com/fullchain.pem /etc/letsencrypt/live/zipkin.mdmsua.com/privkey.pem > /etc/letsencrypt/live/zipkin.mdmsua.com/ssl.pem"
+  
+  - name: check if jaeger certificate exists
+    stat: path=/etc/letsencrypt/live/jaeger.mdmsua.com/fullchain.pem
+    register: jaeger
+
+  - name: obtain jaeger certificate
+    shell: "certbot certonly --standalone -d jaeger.mdmsua.com --email mdmsua@icloud.com --non-interactive --agree-tos"
+    when: jaeger.stat.exists == False
+ 
+  - name: create jaeger ssl certificate
+    shell: "cat /etc/letsencrypt/live/jaeger.mdmsua.com/fullchain.pem /etc/letsencrypt/live/jaeger.mdmsua.com/privkey.pem > /etc/letsencrypt/live/jaeger.mdmsua.com/ssl.pem"
+
+  - name: start haproxy
+    service:
+      name: haproxy
+      state: started

@@ -37,15 +37,21 @@ backend be-zipkin
     option httpchk GET /
     http-check expect status 200
 
+backend be-jaeger
+    server jaeger.mdmsua.com 127.0.0.1:16686
+    option httpchk GET /
+    http-check expect status 200
+
 frontend http-frontend
     bind *:80
     mode http
     redirect scheme https code 301
 
 frontend https-frontend
-    bind *:443 ssl crt /etc/letsencrypt/live/zipkin.mdmsua.com/ssl.pem alpn h2,http/1.1
+    bind *:443 ssl crt /etc/letsencrypt/live/zipkin.mdmsua.com/ssl.pem crt /etc/letsencrypt/live/jaeger.mdmsua.com/ssl.pem alpn h2,http/1.1
     mode http
-    use_backend be-zipkin if { hdr(host) -i zipkin.mdmsua.com }
+    use_backend be-zipkin if { ssl_fc_sni zipkin.mdmsua.com }
+    use_backend be-jaeger if { ssl_fc_sni jaeger.mdmsua.com }
 
 frontend stats
     bind *:9999
